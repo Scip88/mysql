@@ -316,6 +316,15 @@ _mysql_want_help() {
 	return 1
 }
 
+# Install UDF Function into Mysql Environment
+mysql_install_mysql_udf_function() {
+	if [ -n "$MYSQL_ONETIME_PASSWORD" ]; then
+		docker_process_sql  <<-EOSQL
+			CREATE FUNCTION udfpost RETURNS STRING SONAME 'libudfpost.so';
+		EOSQL
+	fi
+}
+
 _main() {
 	# if command starts with an option, prepend mysqld
 	if [ "${1:0:1}" = '-' ]; then
@@ -349,6 +358,10 @@ _main() {
 			docker_setup_db
 			docker_process_init_files /docker-entrypoint-initdb.d/*
 
+			mysql_note "Creating function udfpost"
+			mysql_install_mysql_udf_function
+			mysql_note "Function udfpost created"
+			
 			mysql_expire_root_user
 
 			mysql_note "Stopping temporary server"
