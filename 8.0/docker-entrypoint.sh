@@ -316,7 +316,8 @@ _mysql_want_help() {
 	return 1
 }
 
-# Install UDF Function into Mysql Environment
+
+# Install UDF Function as Mysql Plugin
 mysql_install_mysql_udf_function() {
 	if [ -n "$MYSQL_ONETIME_PASSWORD" ]; then
 		docker_process_sql  <<-EOSQL
